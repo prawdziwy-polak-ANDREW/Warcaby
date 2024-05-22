@@ -1,0 +1,476 @@
+    from tkinter import * - Importuje wszystkie funkcje i klasy z modułu tkinter, który jest używany do tworzenia interfejsów graficznych w Pythonie.
+
+    import random - Importuje moduł random, który umożliwia generowanie losowych liczb.
+
+    import time - Importuje moduł time, który pozwala na pracę z czasem, np. wstrzymywanie działania programu.
+
+    tablica = [[0] * 8 for a in range(8)] - Tworzy dwuwymiarową tablicę (8x8) wypełnioną zerami.
+
+    with open("plansza.txt", 'w') as f: - Otwiera plik plansza.txt do zapisu.
+
+    Pętla for i in range(8): - Iteruje przez liczby od 0 do 7 (osiem iteracji, jedna dla każdego wiersza planszy).
+
+    Pętla for j in range(8): - Iteruje przez liczby od 0 do 7 (osiem iteracji, jedna dla każdej kolumny wiersza).
+
+    if (i + j) % 2 == 0: - Sprawdza, czy suma indeksów wiersza i kolumny jest parzysta.
+
+    tablica[i][j] = 'B' - Jeśli suma jest parzysta, ustawia wartość B w komórce tablicy.
+
+    f.write('B') - Zapisuje B do pliku plansza.txt.
+
+    else: - Jeśli suma jest nieparzysta,
+
+    tablica[i][j] = 'C' - Ustawia wartość C w komórce tablicy.
+
+    f.write('C') - Zapisuje C do pliku plansza.txt.
+
+    if i < 7: - Jeśli nie jest to ostatni wiersz,
+
+    f.write("\n") - Dodaje nową linię do pliku.
+
+    def czy_legalny_ruch(xstart, ystart, xend, yend): - Definiuje funkcję sprawdzającą legalność ruchu.
+    kolor = plansza[xstart][ystart] - Pobiera kolor pionka na pozycji startowej.
+    xs=int((xstart + xend) / 2) - Oblicza środkową pozycję w rzędzie.
+    ys=int((ystart + yend) / 2) - Oblicza środkową pozycję w kolumnie.
+    if kolor != ostatni: - Sprawdza, czy ruch jest wykonywany przez gracza, który nie wykonał ostatniego ruchu.
+    if kolor == 'C': - Sprawdza, czy pionek jest czarny.
+    if xstart + 1 == xend: - Sprawdza, czy ruch jest o jedno pole do przodu.
+    if (ystart - yend) ** 2 == 1: - Sprawdza, czy ruch jest na sąsiednią kolumnę.
+    if 0 <= xend <= 7 and 0 <= yend <= 7: - Sprawdza, czy końcowa pozycja jest w granicach planszy.
+    if plansza[xend][yend] == ' ': - Sprawdza, czy końcowa pozycja jest pusta.
+    return 'ok' - Zwraca 'ok', jeśli ruch jest legalny.
+    elif xstart + 2 == xend and (ystart - yend) ** 2 == 4: - Sprawdza, czy ruch jest o dwa pola do przodu (skok).
+    if 0 <= xend <= 7 and 0 <= yend <= 7: - Sprawdza, czy końcowa pozycja jest w granicach planszy.
+    if plansza[xend][yend] == ' ' and plansza[xs][ys] == 'B': - Sprawdza, czy końcowa pozycja jest pusta i środkowa pozycja zawiera przeciwnika.
+    plansza[xs][ys] = ' ' - Usuwa przeciwnika z planszy.
+    return 'ok' - Zwraca 'ok', jeśli ruch jest legalny.
+    elif kolor == 'B': - Sprawdza, czy pionek jest biały.
+    Powyższy blok kodu dla białych działa analogicznie do tego dla czarnych.
+    def czy_legalny_ruch_damka(xstart, ystart, xend, yend): - Definiuje funkcję sprawdzającą legalność ruchu damki (królowej).
+    kolor = plansza[xstart][ystart] - Pobiera kolor pionka na pozycji startowej.
+    if kolor[0] != ostatni: - Sprawdza, czy ruch jest wykonywany przez gracza, który nie wykonał ostatniego ruchu.
+    if kolor[-1] == 'D': - Sprawdza, czy pionek jest damką.
+    if plansza[xend][yend] == ' ': - Sprawdza, czy końcowa pozycja jest pusta.
+    liczba_bialych = 0 - Inicjalizuje licznik białych pionków.
+    for i in range(1, abs(xstart - xend)+1): - Iteruje przez pola między startem a końcem.
+    p_przeciwnika1 = xstart + i * znak(xstart, xend) - Oblicza pozycję przeciwnika w rzędzie.
+    p_przeciwnika2 = ystart + i * znak(ystart, yend) - Oblicza pozycję przeciwnika w kolumnie.
+    if plansza[p_przeciwnika1][p_przeciwnika2][0] == kolor[0]: - Sprawdza, czy po drodze znajduje się pionek przeciwnika.
+    liczba_bialych += 1 - Zwiększa licznik, jeśli tak.
+    if liczba_bialych == 0: - Jeśli nie ma przeciwników po drodze,
+    for i in range(0, abs(xstart - xend)+1): - Iteruje przez pola między startem a końcem.
+    p_przeciwnika1 = xstart + i * znak(xstart, xend) - Oblicza pozycję przeciwnika w rzędzie.
+    p_przeciwnika2 = ystart + i * znak(ystart, yend) - Oblicza pozycję przeciwnika w kolumnie.
+    if plansza[p_przeciwnika1][p_przeciwnika2] != ' ': - Jeśli znajduje się tam pionek,
+    plansza[p_przeciwnika1][p_przeciwnika2] = ' ' - Usuwa go.
+    return 'ok' - Zwraca 'ok', jeśli ruch jest legalny.
+
+    def rysuj_szachownice(): - Definiuje funkcję rysującą planszę.
+    for i in range(len(tablica)): - Iteruje przez wiersze tablicy.
+    for j in range(len(tablica[i])): - Iteruje przez kolumny tablicy.
+    kolor = "white" if (i + j) % 2 == 0 else "gray" - Określa kolor pola.
+    canvas.create_rectangle(i * 20 + 50, j * 20 + 50, i * 20 + 70, j * 20 + 70, outline="black", fill=kolor, width=2) - Rysuje prostokąt na płótnie canvas.
+    canvas.pack() - Pakuje płótno, aby je wyświetlić.
+    def wykonaj_ruch(xstart, ystart, xend, yend): - Definiuje funkcję wykonującą ruch.
+    status = 0 - Inicjalizuje status ruchu.
+    k = plansza[xstart][ystart] - Pobiera kolor pionka na pozycji startowej.
+    global ostatni - Oznacza, że zmienna ostatni jest globalna.
+    if czy_legalny_ruch(xstart, ystart, xend, yend) == 'ok': - Sprawdza, czy ruch jest legalny.
+    ostatni = k[0] - Ustawia kolor pionka jako ostatnio ruszający się.
+    plansza[xend][yend] = k - Przesuwa pionek na nową pozycję.
+    plansza[xstart][ystart] = ' ' - Czyści starą pozycję.
+    if k == 'B' and xend == 0: - Jeśli biały pionek dotarł do końca planszy,
+    plansza[xend][yend] = 'BD' - Zmienia go na damkę.
+    if k == 'C' and xend == 7: - Jeśli czarny pionek dotarł do końca planszy,
+    plansza[xend][yend] = 'CD' - Zmienia go na damkę.
+    status = 1 - Ustawia status na 1, oznaczając udany ruch.
+    if czy_legalny_ruch_damka(xstart, ystart, xend, yend) == 'ok': - Sprawdza legalność ruchu damki.
+    ostatni = k[0] - Ustawia kolor pionka jako ostatnio ruszający się.
+    plansza[xend][yend] = k - Przesuwa pionek na nową pozycję.
+    plansza[xstart][ystart] = ' ' - Czyści starą pozycję.
+    status = 1 - Ustawia status na 1, oznaczając udany ruch.
+    if status == 1: - Jeśli ruch był udany,
+    for a in range(8): - Iteruje przez wiersze planszy,
+    print(plansza[a]) - Drukuje planszę.
+    pokaz_pionki() - Pokazuje pionki na planszy.
+    ruch_komputera() - Wykonuje ruch komputera.
+    pokaz_pionki() - Pokazuje pionki na planszy.
+    def ruch_komputera(): - Definiuje funkcję wykonującą ruch komputera.
+    xstart = random.randint(0, 7) - Losuje początkowy wiersz.
+    ystart = random.randint(0, 7) - Losuje początkową kolumnę.
+    xend = random.randint(0, 7) - Losuje końcowy wiersz.
+    yend = random.randint(0, 7) - Losuje końcową kolumnę.
+    global liczba_losowan - Oznacza, że zmienna liczba_losowan jest globalna.
+    liczba_losowan = 0 - Inicjalizuje licznik losowań.
+    while czy_legalny_ruch(xstart, ystart, xend, yend) != "ok": - Dopóki ruch nie jest legalny,
+    liczba_losowan += 1 - Zwiększa licznik losowań.
+    xstart = random.randint(0, 7) - Losuje nowy początkowy wiersz.
+    ystart = random.randint(0, 7) - Losuje nową początkową kolumnę.
+    xend = random.randint(0, 7) - Losuje nowy końcowy wiersz.
+    yend = random.randint(0, 7) - Losuje nową końcową kolumnę.
+    k = plansza[xstart][ystart] - Pobiera kolor pionka na pozycji startowej.
+    time.sleep(1) - Wprowadza opóźnienie 1 sekundy.
+    global ostatni - Oznacza, że zmienna ostatni jest globalna.
+    ostatni = k[0] - Ustawia kolor pionka jako ostatnio ruszający się.
+    plansza[xend][yend] = k - Przesuwa pionek na nową pozycję.
+    plansza[xstart][ystart] = ' ' - Czyści starą pozycję.
+    if k == 'C' and xend == 7: - Jeśli czarny pionek dotarł do końca planszy,
+    plansza[xend][yend] = 'CD' - Zmienia go na damkę.
+def pokaz_pionki(): - Definiuje funkcję pokazującą pionki na planszy.
+canvas.delete('all') - Czyści całe płótno.
+rysuj_szachownice() - Rysuje planszę.
+for i in range(len(plansza)): - Iteruje przez wiersze planszy.
+for j in range(len(plansza[i])): - Iteruje przez kolumny planszy.
+if plansza[i][j] != ' ': - Jeśli pole nie jest puste,
+kolor = 'black' if plansza[i][j][0] == 'C' else 'white' - Ustawia kolor pionka.
+canvas.create_oval(j * 20 + 53, i * 20 + 53, j * 20 + 67, i * 20 + 67, outline="black", fill=kolor, width=2, tags="oval") - Rysuje pionek.
+canvas.pack() - Pakuje płótno, aby je wyświetlić.
+if plansza[i][j][-1] == 'D': - Jeśli pionek jest damką,
+canvas.create_text(j * 20 + 60, i * 20 + 60, text="D", fill="red", font=('Helvetica 8 bold')) - Dodaje literę "D" na pionku.
+canvas.pack() - Pakuje płótno, aby je wyświetlić.
+root.update() - Aktualizuje okno
+Oto szczegółowe wyjaśnienie Twojego kodu, linijka po linijce:
+
+python
+
+from tkinter import *
+import random
+import time
+
+tablica = [[0] * 8 for a in range(8)]
+
+    from tkinter import * - Importuje wszystkie funkcje i klasy z modułu tkinter, który jest używany do tworzenia interfejsów graficznych w Pythonie.
+    import random - Importuje moduł random, który umożliwia generowanie losowych liczb.
+    import time - Importuje moduł time, który pozwala na pracę z czasem, np. wstrzymywanie działania programu.
+    tablica = [[0] * 8 for a in range(8)] - Tworzy dwuwymiarową tablicę (8x8) wypełnioną zerami.
+
+python
+
+with open("plansza.txt", 'w') as f:
+    for i in range(8):
+        for j in range(8):
+            if (i + j) % 2 == 0:
+                tablica[i][j] = 'B'
+                f.write('B')
+            else:
+                tablica[i][j] = 'C'
+                f.write('C')
+        if i < 7:
+            f.write("\n")
+
+    with open("plansza.txt", 'w') as f: - Otwiera plik plansza.txt do zapisu.
+    Pętla for i in range(8): - Iteruje przez liczby od 0 do 7 (osiem iteracji, jedna dla każdego wiersza planszy).
+    Pętla for j in range(8): - Iteruje przez liczby od 0 do 7 (osiem iteracji, jedna dla każdej kolumny wiersza).
+    if (i + j) % 2 == 0: - Sprawdza, czy suma indeksów wiersza i kolumny jest parzysta.
+    tablica[i][j] = 'B' - Jeśli suma jest parzysta, ustawia wartość B w komórce tablicy.
+    f.write('B') - Zapisuje B do pliku plansza.txt.
+    else: - Jeśli suma jest nieparzysta,
+    tablica[i][j] = 'C' - Ustawia wartość C w komórce tablicy.
+    f.write('C') - Zapisuje C do pliku plansza.txt.
+    if i < 7: - Jeśli nie jest to ostatni wiersz,
+    f.write("\n") - Dodaje nową linię do pliku.
+
+python
+
+def czy_legalny_ruch(xstart, ystart, xend, yend):
+    kolor = plansza[xstart][ystart]
+    xs=int((xstart + xend) / 2)
+    ys=int((ystart + yend) / 2)
+    if kolor != ostatni:
+        if kolor == 'C':
+            if xstart + 1 == xend:
+                if (ystart - yend) ** 2 == 1:
+                    if 0 <= xend <= 7 and 0 <= yend <= 7:
+                        if plansza[xend][yend] == ' ':
+                            return 'ok'
+            elif xstart + 2 == xend and (ystart - yend) ** 2 == 4:
+                if 0 <= xend <= 7 and 0 <= yend <= 7:
+                    if plansza[xend][yend] == ' ' and plansza[xs][ys] == 'B':
+                        plansza[xs][ys] = ' '
+                        return 'ok'
+                    
+        elif kolor == 'B':
+            if xstart - 1 == xend:
+                if (ystart - yend) ** 2 == 1:
+                    if 0 <= xend <= 7 and 0 <= yend <= 7:
+                        if plansza[xend][yend] == ' ':
+                            return 'ok'
+            elif xstart - 2 == xend and (ystart - yend) ** 2 == 4:
+                if 0 <= xend <= 7 and 0 <= yend <= 7:
+                    if plansza[xend][yend] == ' ' and plansza[xs][ys] == 'C':
+                        plansza[xs][ys] = ' '
+                        return 'ok'
+
+    def czy_legalny_ruch(xstart, ystart, xend, yend): - Definiuje funkcję sprawdzającą legalność ruchu.
+    kolor = plansza[xstart][ystart] - Pobiera kolor pionka na pozycji startowej.
+    xs=int((xstart + xend) / 2) - Oblicza środkową pozycję w rzędzie.
+    ys=int((ystart + yend) / 2) - Oblicza środkową pozycję w kolumnie.
+    if kolor != ostatni: - Sprawdza, czy ruch jest wykonywany przez gracza, który nie wykonał ostatniego ruchu.
+    if kolor == 'C': - Sprawdza, czy pionek jest czarny.
+    if xstart + 1 == xend: - Sprawdza, czy ruch jest o jedno pole do przodu.
+    if (ystart - yend) ** 2 == 1: - Sprawdza, czy ruch jest na sąsiednią kolumnę.
+    if 0 <= xend <= 7 and 0 <= yend <= 7: - Sprawdza, czy końcowa pozycja jest w granicach planszy.
+    if plansza[xend][yend] == ' ': - Sprawdza, czy końcowa pozycja jest pusta.
+    return 'ok' - Zwraca 'ok', jeśli ruch jest legalny.
+    elif xstart + 2 == xend and (ystart - yend) ** 2 == 4: - Sprawdza, czy ruch jest o dwa pola do przodu (skok).
+    if 0 <= xend <= 7 and 0 <= yend <= 7: - Sprawdza, czy końcowa pozycja jest w granicach planszy.
+    if plansza[xend][yend] == ' ' and plansza[xs][ys] == 'B': - Sprawdza, czy końcowa pozycja jest pusta i środkowa pozycja zawiera przeciwnika.
+    plansza[xs][ys] = ' ' - Usuwa przeciwnika z planszy.
+    return 'ok' - Zwraca 'ok', jeśli ruch jest legalny.
+    elif kolor == 'B': - Sprawdza, czy pionek jest biały.
+    Powyższy blok kodu dla białych działa analogicznie do tego dla czarnych.
+
+python
+
+def czy_legalny_ruch_damka(xstart, ystart, xend, yend): 
+    kolor = plansza[xstart][ystart]
+    if kolor[0] != ostatni:
+        if kolor[-1] == 'D':
+            if plansza[xend][yend] == ' ':
+                liczba_bialych = 0
+                for i in range(1, abs(xstart - xend)+1):
+                    p_przeciwnika1 = xstart + i * znak(xstart, xend)
+                    p_przeciwnika2 = ystart + i * znak(ystart, yend)
+                    if plansza[p_przeciwnika1][p_przeciwnika2][0] == kolor[0]:
+                        liczba_bialych += 1
+                if liczba_bialych == 0:
+                    for i in range(0, abs(xstart - xend)+1):
+                        p_przeciwnika1 = xstart + i * znak(xstart, xend)
+                        p_przeciwnika2 = ystart + i * znak(ystart, yend)
+                        if plansza[p_przeciwnika1][p_przeciwnika2] != ' ':
+                            plansza[p_przeciwnika1][p_przeciwnika2] = ' '
+                    return 'ok'
+
+    def czy_legalny_ruch_damka(xstart, ystart, xend, yend): - Definiuje funkcję sprawdzającą legalność ruchu damki (królowej).
+    kolor = plansza[xstart][ystart] - Pobiera kolor pionka na pozycji startowej.
+    if kolor[0] != ostatni: - Sprawdza, czy ruch jest wykonywany przez gracza, który nie wykonał ostatniego ruchu.
+    if kolor[-1] == 'D': - Sprawdza, czy pionek jest damką.
+    if plansza[xend][yend] == ' ': - Sprawdza, czy końcowa pozycja jest pusta.
+    liczba_bialych = 0 - Inicjalizuje licznik białych pionków.
+    for i in range(1, abs(xstart - xend)+1): - Iteruje przez pola między startem a końcem.
+    p_przeciwnika1 = xstart + i * znak(xstart, xend) - Oblicza pozycję przeciwnika w rzędzie.
+    p_przeciwnika2 = ystart + i * znak(ystart, yend) - Oblicza pozycję przeciwnika w kolumnie.
+    if plansza[p_przeciwnika1][p_przeciwnika2][0] == kolor[0]: - Sprawdza, czy po drodze znajduje się pionek przeciwnika.
+    liczba_bialych += 1 - Zwiększa licznik, jeśli tak.
+    if liczba_bialych == 0: - Jeśli nie ma przeciwników po drodze,
+    for i in range(0, abs(xstart - xend)+1): - Iteruje przez pola między startem a końcem.
+    p_przeciwnika1 = xstart + i * znak(xstart, xend) - Oblicza pozycję przeciwnika w rzędzie.
+    p_przeciwnika2 = ystart + i * znak(ystart, yend) - Oblicza pozycję przeciwnika w kolumnie.
+    if plansza[p_przeciwnika1][p_przeciwnika2] != ' ': - Jeśli znajduje się tam pionek,
+    plansza[p_przeciwnika1][p_przeciwnika2] = ' ' - Usuwa go.
+    return 'ok' - Zwraca 'ok', jeśli ruch jest legalny.
+
+python
+
+def znak(a,b):
+    if a - b > 0:
+        return -1
+    return 1
+
+    def znak(a,b): - Definiuje funkcję zwracającą znak różnicy między a a b.
+    if a - b > 0: - Jeśli a jest większe niż b,
+    return -1 - Zwraca -1.
+    return 1 - W przeciwnym razie zwraca 1.
+
+python
+
+def rysuj_szachownice():
+    for i in range(len(tablica)):
+        for j in range(len(tablica[i])):
+            kolor = "white" if (i + j) % 2 == 0 else "gray"
+            canvas.create_rectangle(i * 20 + 50, j * 20 + 50, i * 20 + 70, j * 20 + 70, outline="black", fill=kolor,
+                                    width=2)
+            canvas.pack()
+
+    def rysuj_szachownice(): - Definiuje funkcję rysującą planszę.
+    for i in range(len(tablica)): - Iteruje przez wiersze tablicy.
+    for j in range(len(tablica[i])): - Iteruje przez kolumny tablicy.
+    kolor = "white" if (i + j) % 2 == 0 else "gray" - Określa kolor pola.
+    canvas.create_rectangle(i * 20 + 50, j * 20 + 50, i * 20 + 70, j * 20 + 70, outline="black", fill=kolor, width=2) - Rysuje prostokąt na płótnie canvas.
+    canvas.pack() - Pakuje płótno, aby je wyświetlić.
+
+python
+
+def wykonaj_ruch(xstart, ystart, xend, yend):
+    status = 0
+    k = plansza[xstart][ystart]
+    global ostatni
+
+    if czy_legalny_ruch(xstart, ystart, xend, yend) == 'ok':
+        ostatni = k[0]
+        plansza[xend][yend] = k
+        plansza[xstart][ystart] = ' '
+        if k == 'B' and xend == 0:
+            plansza[xend][yend] = 'BD'
+        if k == 'C' and xend == 7:
+            plansza[xend][yend] = 'CD'
+        status = 1
+
+    if czy_legalny_ruch_damka(xstart, ystart, xend, yend) == 'ok':
+        ostatni = k[0]
+        plansza[xend][yend] = k
+        plansza[xstart][ystart] = ' '
+        status = 1
+
+    if status == 1:
+        for a in range(8):
+            print(plansza[a])
+        pokaz_pionki()
+        ruch_komputera()
+        pokaz_pionki()
+
+    def wykonaj_ruch(xstart, ystart, xend, yend): - Definiuje funkcję wykonującą ruch.
+    status = 0 - Inicjalizuje status ruchu.
+    k = plansza[xstart][ystart] - Pobiera kolor pionka na pozycji startowej.
+    global ostatni - Oznacza, że zmienna ostatni jest globalna.
+    if czy_legalny_ruch(xstart, ystart, xend, yend) == 'ok': - Sprawdza, czy ruch jest legalny.
+    ostatni = k[0] - Ustawia kolor pionka jako ostatnio ruszający się.
+    plansza[xend][yend] = k - Przesuwa pionek na nową pozycję.
+    plansza[xstart][ystart] = ' ' - Czyści starą pozycję.
+    if k == 'B' and xend == 0: - Jeśli biały pionek dotarł do końca planszy,
+    plansza[xend][yend] = 'BD' - Zmienia go na damkę.
+    if k == 'C' and xend == 7: - Jeśli czarny pionek dotarł do końca planszy,
+    plansza[xend][yend] = 'CD' - Zmienia go na damkę.
+    status = 1 - Ustawia status na 1, oznaczając udany ruch.
+    if czy_legalny_ruch_damka(xstart, ystart, xend, yend) == 'ok': - Sprawdza legalność ruchu damki.
+    ostatni = k[0] - Ustawia kolor pionka jako ostatnio ruszający się.
+    plansza[xend][yend] = k - Przesuwa pionek na nową pozycję.
+    plansza[xstart][ystart] = ' ' - Czyści starą pozycję.
+    status = 1 - Ustawia status na 1, oznaczając udany ruch.
+    if status == 1: - Jeśli ruch był udany,
+    for a in range(8): - Iteruje przez wiersze planszy,
+    print(plansza[a]) - Drukuje planszę.
+    pokaz_pionki() - Pokazuje pionki na planszy.
+    ruch_komputera() - Wykonuje ruch komputera.
+    pokaz_pionki() - Pokazuje pionki na planszy.
+
+python
+
+def ruch_komputera():
+    xstart = random.randint(0, 7)
+    ystart = random.randint(0, 7)
+    xend = random.randint(0, 7)
+    yend = random.randint(0, 7)
+    global liczba_losowan
+    liczba_losowan = 0
+    while czy_legalny_ruch(xstart, ystart, xend, yend) != "ok":
+        liczba_losowan += 1
+        xstart = random.randint(0, 7)
+        ystart = random.randint(0, 7)
+        xend = random.randint(0, 7)
+        yend = random.randint(0, 7)
+    k = plansza[xstart][ystart]
+    time.sleep(1)
+    global ostatni
+    ostatni = k[0]
+    plansza[xend][yend] = k
+    plansza[xstart][ystart] = ' '
+    if k == 'C' and xend == 7:
+        plansza[xend][yend] = 'CD'
+
+    def ruch_komputera(): - Definiuje funkcję wykonującą ruch komputera.
+    xstart = random.randint(0, 7) - Losuje początkowy wiersz.
+    ystart = random.randint(0, 7) - Losuje początkową kolumnę.
+    xend = random.randint(0, 7) - Losuje końcowy wiersz.
+    yend = random.randint(0, 7) - Losuje końcową kolumnę.
+    global liczba_losowan - Oznacza, że zmienna liczba_losowan jest globalna.
+    liczba_losowan = 0 - Inicjalizuje licznik losowań.
+    while czy_legalny_ruch(xstart, ystart, xend, yend) != "ok": - Dopóki ruch nie jest legalny,
+    liczba_losowan += 1 - Zwiększa licznik losowań.
+    xstart = random.randint(0, 7) - Losuje nowy początkowy wiersz.
+    ystart = random.randint(0, 7) - Losuje nową początkową kolumnę.
+    xend = random.randint(0, 7) - Losuje nowy końcowy wiersz.
+    yend = random.randint(0, 7) - Losuje nową końcową kolumnę.
+    k = plansza[xstart][ystart] - Pobiera kolor pionka na pozycji startowej.
+    time.sleep(1) - Wprowadza opóźnienie 1 sekundy.
+    global ostatni - Oznacza, że zmienna ostatni jest globalna.
+    ostatni = k[0] - Ustawia kolor pionka jako ostatnio ruszający się.
+    plansza[xend][yend] = k - Przesuwa pionek na nową pozycję.
+    plansza[xstart][ystart] = ' ' - Czyści starą pozycję.
+    if k == 'C' and xend == 7: - Jeśli czarny pionek dotarł do końca planszy,
+    plansza[xend][yend] = 'CD' - Zmienia go na damkę.
+
+python
+
+def pokaz_pionki():
+    canvas.delete('all')
+    rysuj_szachownice()
+    #zmien_napis(liczba_losowan)
+    for i in range(len(plansza)):
+        for j in range(len(plansza[i])):
+            if plansza[i][j] != ' ':
+                kolor = 'black' if plansza[i][j][0] == 'C' else 'white'
+                canvas.create_oval(j * 20 + 53, i * 20 + 53, j * 20 + 67, i * 20 + 67, outline="black", fill=kolor,
+                                   width=2, tags="oval")
+                canvas.pack()
+                if plansza[i][j][-1] == 'D':
+                    canvas.create_text(j * 20 + 60, i * 20 + 60, text="D", fill="red", font=('Helvetica 8 bold'))
+                    canvas.pack()
+    root.update()
+
+    def pokaz_pionki(): - Definiuje funkcję pokazującą pionki na planszy.
+    canvas.delete('all') - Czyści całe płótno.
+    rysuj_szachownice() - Rysuje planszę.
+    for i in range(len(plansza)): - Iteruje przez wiersze planszy.
+    for j in range(len(plansza[i])): - Iteruje przez kolumny planszy.
+    if plansza[i][j] != ' ': - Jeśli pole nie jest puste,
+    kolor = 'black' if plansza[i][j][0] == 'C' else 'white' - Ustawia kolor pionka.
+    canvas.create_oval(j * 20 + 53, i * 20 + 53, j * 20 + 67, i * 20 + 67, outline="black", fill=kolor, width=2, tags="oval") - Rysuje pionek.
+    canvas.pack() - Pakuje płótno, aby je wyświetlić.
+    if plansza[i][j][-1] == 'D': - Jeśli pionek jest damką,
+    canvas.create_text(j * 20 + 60, i * 20 + 60, text="D", fill="red", font=('Helvetica 8 bold')) - Dodaje literę "D" na pionku.
+    canvas.pack() - Pakuje płótno, aby je wyświetlić.
+    root.update() - Aktualizuje okno.
+
+python
+
+def klik(e):
+    a = int((e.x-50)/20)
+    b = int((e.y-50)/20)
+    if plansza[b][a] != ' ':
+        with open("ruch.txt", "w") as f:
+            f.write(str(b) + str(a))
+    if plansza[b][a] == ' ':
+        with open("ruch.txt", "r") as f:
+            x = f.read()
+        wykonaj_ruch(int(x[0]), int(x[1]), b, a)
+
+    def klik(e): - Definiuje funkcję obsługującą kliknięcie myszą.
+    a = int((e.x-50)/20) - Oblicza kolumnę kliknięcia.
+    b = int((e.y-50)/20) - Oblicza wiersz kliknięcia.
+    if plansza[b][a] != ' ': - Jeśli pole nie jest puste,
+    with open("ruch.txt", "w") as f: - Otwiera plik ruch.txt do zapisu.
+    f.write(str(b) + str(a)) - Zapisuje współrzędne kliknięcia.
+    if plansza[b][a] == ' ': - Jeśli pole jest puste,
+    with open("ruch.txt", "r") as f: - Otwiera plik ruch.txt do odczytu.
+    x = f.read() - Odczytuje zawartość pliku.
+    wykonaj_ruch(int(x[0]), int(x[1]), b, a) - Wykonuje ruch na podstawie zapisanych współrzędnych.
+    def sprawdz_wygrana(): - Definiuje funkcję sprawdzającą wygraną.
+    liczba_bialych = 0 - Inicjalizuje licznik białych pionków.
+    liczba_czarnych = 0 - Inicjalizuje licznik czarnych pionków.
+    for i in range(8): - Iteruje przez wiersze planszy.
+    for j in range(8): - Iteruje przez kolumny planszy.
+    if plansza[i][j][0] == 'B': - Jeśli pionek jest biały,
+    liczba_bialych += 1 - Zwiększa licznik białych pionków.
+    elif plansza[i][j][0] == 'C': - Jeśli pionek jest czarny,
+    liczba_czarnych += 1 - Zwiększa licznik czarnych pionków.
+    if liczba_bialych == 0: - Jeśli nie ma białych pionków,
+    napis_wygrana.set("Czarne wygrywają!") - Ustawia komunikat o wygranej czarnych.
+    root.quit() - Zamyka aplikację.
+    elif liczba_czarnych == 0: - Jeśli nie ma czarnych pionków,
+    napis_wygrana.set("Białe wygrywają!") - Ustawia komunikat o wygranej białych.
+    root.quit() - Zamyka aplikację.
+plansza = [ - Inicjalizuje planszę do gry.
+ostatni = 'C' - Zmienna ostatni jest inicjalizowana jako 'C', co oznacza, że pierwszy ruch należy do pionków czarnych.
+
+root = Tk() - Tworzenie instancji klasy Tk(), która jest głównym oknem aplikacji.
+canvas = Canvas() - Tworzenie instancji klasy Canvas(), która będzie wykorzystywana do rysowania szachownicy i pionków.
+napis = StringVar() - Tworzenie zmiennej typu StringVar(), która będzie używana do przechowywania tekstu na etykiecie.
+napis_wygrana = StringVar() - Tworzenie zmiennej typu StringVar(), która będzie używana do przechowywania tekstu na etykiecie informującej o wygranej.
+label_wygrana = Label(root, textvariable=napis_wygrana) - Tworzenie etykiety związanego z zmienną napis_wygrana, która będzie wyświetlała tekst informujący o wygranej.
+label_wygrana.pack() - Umieszczenie etykiety związanej z wygraną w oknie głównym.
+root.bind("<Button-1>", klik) - Przypisanie funkcji klik do zdarzenia kliknięcia lewym przyciskiem myszy w głównym oknie. Ta funkcja zostanie wywołana po każdym kliknięciu.
+rysuj_szachownice() - Wywołanie funkcji rysuj_szachownice(), która rysuje szachownicę na canvasie.
+pokaz_pionki() - Wywołanie funkcji pokaz_pionki(), która rysuje pionki na szachownicy.
+root.mainloop() - Rozpoczęcie głównej pętli zdarzeń Tkinter, która będzie obsługiwać interakcje użytkownika.
+sprawdz_wygrana() - Wywołanie funkcji sprawdz_wygrana() po zakończeniu pętli głównej, aby sprawdzić, czy gra została zakończona.
